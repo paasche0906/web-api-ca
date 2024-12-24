@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -35,18 +35,6 @@ router.get('/:id', asyncHandler(async (req, res) => {
     } else {
         res.status(404).json({ message: 'The movie you requested could not be found.', status_code: 404 });
     }
-}));
-
-// Get upcoming movies from TMDB
-router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
-    res.status(200).json(upcomingMovies);
-}));
-
-// New Route: Get genres from TMDB
-router.get('/tmdb/genres', asyncHandler(async (req, res) => {
-    const genres = await getGenres();
-    res.status(200).json(genres);
 }));
 
 // Fetch Movies by Genre
@@ -86,5 +74,23 @@ router.get('/language', asyncHandler(async (req, res) => {
     }
 }));
 
+
+// Get upcoming movies from TMDB
+router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
+    const upcomingMovies = await getUpcomingMovies();
+    res.status(200).json(upcomingMovies);
+}));
+
+// New Route: Get genres from TMDB
+router.get('/tmdb/genres', asyncHandler(async (req, res) => {
+    const genres = await getGenres();
+    res.status(200).json(genres);
+}));
+
+// Get Top-rated movies from TMDB
+router.get('/tmdb/top_rated', asyncHandler(async (req, res) => {
+    const top_ratedMovies = await getTopRatedMovies();
+    res.status(200).json(top_ratedMovies);
+}));
 
 export default router;
