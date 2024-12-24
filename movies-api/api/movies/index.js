@@ -54,7 +54,7 @@ router.get('/mongo/genre/:genreId', asyncHandler(async (req, res) => {
 }));
 
 // Get movies with ratings higher than a specified value
-router.get('/mongo/movies/rating', asyncHandler(async (req, res) => {
+router.get('/mongo/rating', asyncHandler(async (req, res) => {
     const { minRating = 7 } = req.query;
 
     try {
@@ -83,7 +83,20 @@ router.get('/mongo/year/:year', asyncHandler(async (req, res) => {
     }
 }));
 
+// Gets movies whose original language is the specified value:
+router.get('/mongo/language', asyncHandler(async (req, res) => {
+    const { lang } = req.query;
 
+    try {
+        const movies = await movieModel.find({ original_language: lang });
+        if (movies.length === 0) {
+            return res.status(404).json({ message: 'No movies found for the specified language.', status_code: 404 });
+        }
+        res.status(200).json(movies);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching movies by language', error: error.message });
+    }
+}));
 
 // Get upcoming movies from TMDB
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
