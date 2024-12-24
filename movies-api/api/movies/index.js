@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -38,7 +38,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
 }));
 
 // Fetch Movies by Genre
-router.get('/genre/:genreId', asyncHandler(async (req, res) => {
+router.get('/mongo/genre/:genreId', asyncHandler(async (req, res) => {
     const { genreId } = req.params;
 
     try {
@@ -53,24 +53,18 @@ router.get('/genre/:genreId', asyncHandler(async (req, res) => {
     }
 }));
 
-// Fetch Movies by Original Language
-router.get('/language', asyncHandler(async (req, res) => {
-    const { lang } = req.query;
-
-    if (!lang) {
-        return res.status(400).json({ message: 'Language query parameter is required.' });
-    }
+// Get movies with ratings higher than a specified value
+router.get('/mongo/movies/rating', asyncHandler(async (req, res) => {
+    const { minRating = 7 } = req.query;
 
     try {
-        const movies = await movieModel.find({ original_language: lang });
-
+        const movies = await movieModel.find({ vote_average: { $gte: +minRating } });
         if (movies.length === 0) {
-            return res.status(404).json({ message: 'No movies found for the specified language.', status_code: 404 });
+            return res.status(404).json({ message: 'No movies found with the given rating.', status_code: 404 });
         }
-
         res.status(200).json(movies);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching movies by language', error: error.message });
+        res.status(500).json({ message: 'Error fetching movies by rating', error: error.message });
     }
 }));
 
@@ -81,16 +75,28 @@ router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
     res.status(200).json(upcomingMovies);
 }));
 
-// New Route: Get genres from TMDB
-router.get('/tmdb/genres', asyncHandler(async (req, res) => {
-    const genres = await getGenres();
-    res.status(200).json(genres);
+// Get popular movies from TMDB
+router.get('/tmdb/popular', asyncHandler(async (req, res) => {
+    const popularMovies = await getPopularMovies();
+    res.status(200).json(popularMovies);
+}));
+
+// Get trending movies from TMDB
+router.get('/tmdb/trending/today', asyncHandler(async (req, res) => {
+    const trendingMovies = await getTrendingMovies();
+    res.status(200).json(trendingMovies);
 }));
 
 // Get Top-rated movies from TMDB
 router.get('/tmdb/top_rated', asyncHandler(async (req, res) => {
     const top_ratedMovies = await getTopRatedMovies();
     res.status(200).json(top_ratedMovies);
+}));
+
+// Get genres from TMDB
+router.get('/tmdb/genres', asyncHandler(async (req, res) => {
+    const genres = await getGenres();
+    res.status(200).json(genres);
 }));
 
 export default router;
