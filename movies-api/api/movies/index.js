@@ -68,6 +68,22 @@ router.get('/mongo/movies/rating', asyncHandler(async (req, res) => {
     }
 }));
 
+// Get movies based on the year provided
+router.get('/mongo/year/:year', asyncHandler(async (req, res) => {
+    const { year } = req.params;
+
+    try {
+        const movies = await movieModel.find({ release_date: { $regex: `^${year}` } });
+        if (movies.length === 0) {
+            return res.status(404).json({ message: 'No movies found for the given year.', status_code: 404 });
+        }
+        res.status(200).json(movies);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching movies by year', error: error.message });
+    }
+}));
+
+
 
 // Get upcoming movies from TMDB
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
