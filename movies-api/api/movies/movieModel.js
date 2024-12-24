@@ -5,14 +5,14 @@ const Schema = mongoose.Schema;
 
 const MovieSchema = new Schema({
   adult: { type: Boolean },
-  id: { type: Number, required: true, unique: true },
+  id: { type: Number, required: true, unique: true }, 
   poster_path: { type: String },
   overview: { type: String },
   release_date: { type: String },
   original_title: { type: String },
   genre_ids: [{ type: Number }],
   original_language: { type: String },
-  title: { type: String },
+  title: { type: String, required: true },
   backdrop_path: { type: String },
   popularity: { type: Number },
   vote_count: { type: Number },

@@ -49,4 +49,42 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
     res.status(200).json(genres);
 }));
 
+// Fetch Movies by Genre
+router.get('/genre/:genreId', asyncHandler(async (req, res) => {
+    const { genreId } = req.params;
+
+    try {
+        const movies = await movieModel.find({ genre_ids: genreId }); // Search for movies matching genreId
+        if (movies.length > 0) {
+            res.status(200).json(movies);
+        } else {
+            res.status(404).json({ message: 'No movies found for the specified genre.', status_code: 404 });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching movies by genre', error: error.message });
+    }
+}));
+
+// Fetch Movies by Original Language
+router.get('/language', asyncHandler(async (req, res) => {
+    const { lang } = req.query;
+
+    if (!lang) {
+        return res.status(400).json({ message: 'Language query parameter is required.' });
+    }
+
+    try {
+        const movies = await movieModel.find({ original_language: lang });
+
+        if (movies.length === 0) {
+            return res.status(404).json({ message: 'No movies found for the specified language.', status_code: 404 });
+        }
+
+        res.status(200).json(movies);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching movies by language', error: error.message });
+    }
+}));
+
+
 export default router;
