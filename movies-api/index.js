@@ -7,7 +7,6 @@ import defaultErrHandler from './errHandler';
 import moviesRouter from './api/movies';
 import authenticate from './authenticate';
 import reviewRoutes from './api/reviews/reviewRoutes';
-import favoriteRoutes from './api/favorites/favoriteRoutes';
 
 dotenv.config();
 
@@ -20,7 +19,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
 app.use('/api/movies', authenticate, moviesRouter);
 app.use('/api/reviews', reviewRoutes);
-app.use('/api/favorites', favoriteRoutes);
 app.use(defaultErrHandler);
 
 
