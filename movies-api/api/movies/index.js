@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies,getMovieDetails } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies, getMovieDetails, getMovieImages } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -117,6 +117,18 @@ router.get('/tmdb/all', asyncHandler(async (req, res) => {
         res.status(200).json(allMovies);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching movies from TMDB', error: error.message });
+    }
+}));
+
+router.get('/:id/images', asyncHandler(async (req, res) => {
+    const { id } = req.params; // 从路径参数中获取电影 ID
+
+    try {
+        const images = await getMovieImages(id); // 调用 TMDB API 获取图片数据
+        res.status(200).json(images); // 返回图片数据
+    } catch (error) {
+        console.error('Error fetching movie images:', error.message);
+        res.status(500).json({ message: 'Failed to fetch movie images', error: error.message });
     }
 }));
 
