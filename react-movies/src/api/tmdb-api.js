@@ -1,8 +1,8 @@
 const BASE_URL = 'http://localhost:8080/api';
 
 export const getMovies = async (page = 1) => {
-    const response = await fetch(`${BASE_URL}/movies?page=${page}`);
-    if (!response.ok) throw new Error('Failed to fetch movies');
+    const response = await fetch(`${BASE_URL}/movies/tmdb/all?page=${page}`);
+    if (!response.ok) throw new Error('Failed to fetch movies from backend');
     return response.json();
 };
 
