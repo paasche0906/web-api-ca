@@ -83,9 +83,16 @@ export const getUpcomingMovies = async (page = 1) => {
 
 
 export const getTrendingMoviesToday = async (page = 1) => {
-    return fetch(
-        `https://api.themoviedb.org/3/trending/movie/day?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=${page}`
-    ).then(res => res.json());
+    return fetch(`${BASE_URL}/movies/tmdb/trending/today?page=${page}`)
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error('Failed to fetch trending movies');
+            }
+            return res.json();
+        })
+        .catch((error) => {
+            throw error;
+        });
 };
 
 
