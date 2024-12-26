@@ -1,7 +1,19 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies, getMovieDetails, getMovieImages, getCredits } from '../tmdb-api';
+import {
+    getUpcomingMovies,
+    getGenres,
+    getTopRatedMovies,
+    getPopularMovies,
+    getTrendingMovies,
+    getAllMovies,
+    getMovieDetails,
+    getMovieImages,
+    getCredits,
+    getMovieRecommendations,
+    getSimilarMovies
+} from '../tmdb-api';
 
 const router = express.Router();
 
@@ -122,11 +134,11 @@ router.get('/tmdb/all', asyncHandler(async (req, res) => {
 
 // Get Images
 router.get('/:id/images', asyncHandler(async (req, res) => {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     try {
-        const images = await getMovieImages(id); 
-        res.status(200).json(images); 
+        const images = await getMovieImages(id);
+        res.status(200).json(images);
     } catch (error) {
         console.error('Error fetching movie images:', error.message);
         res.status(500).json({ message: 'Failed to fetch movie images', error: error.message });
@@ -188,14 +200,40 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
 
 // Get credits from TMDB
 router.get('/:movieId/credits', asyncHandler(async (req, res) => {
-    const { movieId } = req.params; // 获取电影 ID
+    const { movieId } = req.params;
 
     try {
-        const credits = await getCredits(movieId); // 调用 TMDB API 获取电影演员和工作人员信息
-        res.status(200).json(credits); // 返回数据
+        const credits = await getCredits(movieId);
+        res.status(200).json(credits);
     } catch (error) {
         console.error('Error fetching movie credits:', error.message);
         res.status(500).json({ message: 'Failed to fetch movie credits', error: error.message });
+    }
+}));
+
+// Get movie recommendations
+router.get('/:movieId/recommendations', asyncHandler(async (req, res) => {
+    const { movieId } = req.params;
+
+    try {
+        const recommendations = await getMovieRecommendations(movieId);
+        res.status(200).json(recommendations);
+    } catch (error) {
+        console.error('Error fetching movie recommendations:', error.message);
+        res.status(500).json({ message: 'Failed to fetch movie recommendations', error: error.message });
+    }
+}));
+
+// Get similar movies
+router.get('/:movieId/similar', asyncHandler(async (req, res) => {
+    const { movieId } = req.params;
+
+    try {
+        const similarMovies = await getSimilarMovies(movieId);
+        res.status(200).json(similarMovies);
+    } catch (error) {
+        console.error('Error fetching similar movies:', error.message);
+        res.status(500).json({ message: 'Failed to fetch similar movies', error: error.message });
     }
 }));
 

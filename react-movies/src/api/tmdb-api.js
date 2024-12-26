@@ -136,13 +136,11 @@ export const getCredits = (movieId) => {
 };
 
 export const getMovieRecommendations = (movieId) => {
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    )
+    return fetch(`${BASE_URL}/movies/${movieId}/recommendations`)
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((error) => {
-                    throw new Error(error.status_message || "Something went wrong");
+                    throw new Error(error.message || "Something went wrong");
                 });
             }
             return response.json();
@@ -153,13 +151,11 @@ export const getMovieRecommendations = (movieId) => {
 };
 
 export const getSimilarMovies = (movieId) => {
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    )
+    return fetch(`${BASE_URL}/movies/${movieId}/similar`)
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((error) => {
-                    throw new Error(error.status_message || "Something went wrong");
+                    throw new Error(error.message || "Something went wrong");
                 });
             }
             return response.json();

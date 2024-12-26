@@ -112,3 +112,35 @@ export const getCredits = async (movieId) => {
         throw error;
     }
 };
+
+export const getMovieRecommendations = async (movieId) => {
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${process.env.TMDB_KEY}`
+        );
+
+        if (!response.ok) {
+            throw new Error((await response.json()).message);
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getSimilarMovies = async (movieId) => {
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${process.env.TMDB_KEY}`
+        );
+
+        if (!response.ok) {
+            throw new Error((await response.json()).message);
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
