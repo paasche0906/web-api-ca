@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies,getMovieDetails } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -29,11 +29,22 @@ router.get('/', asyncHandler(async (req, res) => {
 // Get movie details
 router.get('/:id', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
-    const movie = await movieModel.findByMovieDBId(id);
-    if (movie) {
-        res.status(200).json(movie);
-    } else {
-        res.status(404).json({ message: 'The movie you requested could not be found.', status_code: 404 });
+
+    try {
+        const movie = await movieModel.findByMovieDBId(id);
+        if (movie) {
+            return res.status(200).json(movie);
+        }
+
+        const movieDetails = await getMovieDetails(id);
+        if (movieDetails) {
+            return res.status(200).json(movieDetails);
+        }
+
+        return res.status(404).json({ message: 'The movie you requested could not be found.', status_code: 404 });
+    } catch (error) {
+        console.error('Error fetching movie details:', error.message);
+        return res.status(500).json({ message: 'Error fetching movie details', error: error.message });
     }
 }));
 
