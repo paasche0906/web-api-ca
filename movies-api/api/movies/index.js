@@ -120,12 +120,13 @@ router.get('/tmdb/all', asyncHandler(async (req, res) => {
     }
 }));
 
+// Get Images
 router.get('/:id/images', asyncHandler(async (req, res) => {
-    const { id } = req.params; // 从路径参数中获取电影 ID
+    const { id } = req.params; 
 
     try {
-        const images = await getMovieImages(id); // 调用 TMDB API 获取图片数据
-        res.status(200).json(images); // 返回图片数据
+        const images = await getMovieImages(id); 
+        res.status(200).json(images); 
     } catch (error) {
         console.error('Error fetching movie images:', error.message);
         res.status(500).json({ message: 'Failed to fetch movie images', error: error.message });
@@ -134,26 +135,49 @@ router.get('/:id/images', asyncHandler(async (req, res) => {
 
 // Get upcoming movies from TMDB
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
-    res.status(200).json(upcomingMovies);
+    const { page = 1 } = req.query; // 获取分页参数
+    try {
+        const upcomingMovies = await getUpcomingMovies(page); // 调用 TMDB API
+        res.status(200).json(upcomingMovies);
+    } catch (error) {
+        console.error('Error fetching upcoming movies:', error.message);
+        res.status(500).json({ message: 'Failed to fetch upcoming movies', error: error.message });
+    }
 }));
 
 // Get popular movies from TMDB
 router.get('/tmdb/popular', asyncHandler(async (req, res) => {
-    const popularMovies = await getPopularMovies();
-    res.status(200).json(popularMovies);
+    const { page = 1 } = req.query;
+    try {
+        const popularMovies = await getPopularMovies(page);
+        res.status(200).json(popularMovies);
+    } catch (error) {
+        console.error('Error fetching popular movies:', error.message);
+        res.status(500).json({ message: 'Failed to fetch popular movies', error: error.message });
+    }
 }));
 
 // Get trending movies from TMDB
 router.get('/tmdb/trending/today', asyncHandler(async (req, res) => {
-    const trendingMovies = await getTrendingMovies();
-    res.status(200).json(trendingMovies);
+    const { page = 1 } = req.query;
+    try {
+        const trendingMovies = await getTrendingMovies(page);
+        res.status(200).json(trendingMovies);
+    } catch (error) {
+        console.error('Error fetching trending movies:', error.message);
+        res.status(500).json({ message: 'Failed to fetch trending movies', error: error.message });
+    }
 }));
-
 // Get Top-rated movies from TMDB
 router.get('/tmdb/top_rated', asyncHandler(async (req, res) => {
-    const top_ratedMovies = await getTopRatedMovies();
-    res.status(200).json(top_ratedMovies);
+    const { page = 1 } = req.query;
+    try {
+        const topRatedMovies = await getTopRatedMovies(page);
+        res.status(200).json(topRatedMovies);
+    } catch (error) {
+        console.error('Error fetching top-rated movies:', error.message);
+        res.status(500).json({ message: 'Failed to fetch top-rated movies', error: error.message });
+    }
 }));
 
 // Get genres from TMDB
