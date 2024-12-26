@@ -81,7 +81,6 @@ export const getUpcomingMovies = async (page = 1) => {
         });
 };
 
-
 export const getTrendingMoviesToday = async (page = 1) => {
     return fetch(`${BASE_URL}/movies/tmdb/trending/today?page=${page}`)
         .then((res) => {
@@ -95,7 +94,6 @@ export const getTrendingMoviesToday = async (page = 1) => {
         });
 };
 
-
 export const getPopularMovies = async (page = 1) => {
     return fetch(`${BASE_URL}/movies/tmdb/popular?page=${page}`) 
         .then((res) => {
@@ -108,7 +106,6 @@ export const getPopularMovies = async (page = 1) => {
             throw error;
         });
 };
-
 
 export const getTopRatedMovies = async (page = 1) => {
     return fetch(`${BASE_URL}/movies/tmdb/top_rated?page=${page}`) 
@@ -124,13 +121,11 @@ export const getTopRatedMovies = async (page = 1) => {
 };
 
 export const getCredits = (movieId) => {
-    return fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${process.env.REACT_APP_TMDB_KEY}`
-    )
+    return fetch(`${BASE_URL}/movies/${movieId}/credits`) 
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((error) => {
-                    throw new Error(error.status_message || "Something went wrong");
+                    throw new Error(error.message || "Something went wrong");
                 });
             }
             return response.json();

@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies, getMovieDetails, getMovieImages } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies, getMovieDetails, getMovieImages, getCredits } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -185,5 +185,19 @@ router.get('/tmdb/genres', asyncHandler(async (req, res) => {
     const genres = await getGenres();
     res.status(200).json(genres);
 }));
+
+// Get credits from TMDB
+router.get('/:movieId/credits', asyncHandler(async (req, res) => {
+    const { movieId } = req.params; // 获取电影 ID
+
+    try {
+        const credits = await getCredits(movieId); // 调用 TMDB API 获取电影演员和工作人员信息
+        res.status(200).json(credits); // 返回数据
+    } catch (error) {
+        console.error('Error fetching movie credits:', error.message);
+        res.status(500).json({ message: 'Failed to fetch movie credits', error: error.message });
+    }
+}));
+
 
 export default router;
