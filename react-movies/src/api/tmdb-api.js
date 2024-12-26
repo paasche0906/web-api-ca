@@ -111,9 +111,16 @@ export const getPopularMovies = async (page = 1) => {
 
 
 export const getTopRatedMovies = async (page = 1) => {
-    return fetch(
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US&page=${page}`,
-    ).then(res => res.json());
+    return fetch(`${BASE_URL}/movies/tmdb/top_rated?page=${page}`) 
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error('Failed to fetch top-rated movies');
+            }
+            return res.json();
+        })
+        .catch((error) => {
+            throw error;
+        });
 };
 
 export const getCredits = (movieId) => {
