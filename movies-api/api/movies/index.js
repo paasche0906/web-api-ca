@@ -1,7 +1,7 @@
 import movieModel from './movieModel';
 import asyncHandler from 'express-async-handler';
 import express from 'express';
-import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies } from '../tmdb-api';
+import { getUpcomingMovies, getGenres, getTopRatedMovies, getPopularMovies, getTrendingMovies, getAllMovies } from '../tmdb-api';
 
 const router = express.Router();
 
@@ -95,6 +95,17 @@ router.get('/mongo/language', asyncHandler(async (req, res) => {
         res.status(200).json(movies);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching movies by language', error: error.message });
+    }
+}));
+
+// Get all movies from TMDB
+router.get('/tmdb/all', asyncHandler(async (req, res) => {
+    const { page = 1 } = req.query; // Optional pagination
+    try {
+        const allMovies = await getAllMovies(page);
+        res.status(200).json(allMovies);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching movies from TMDB', error: error.message });
     }
 }));
 
