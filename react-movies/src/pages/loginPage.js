@@ -69,9 +69,6 @@ const LoginPage = () => {
                     }}
                 />
                 <button className="login-button" onClick={login}>Login</button>
-                <p className="login-footer">
-                    <Link to="/reset-password" className="login-link">Reset password</Link>
-                </p>
             </div>
         </div>
     );

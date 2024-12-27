@@ -42,7 +42,6 @@ const AuthContextProvider = ({ children }) => {
         throw new Error(result.message || "Invalid username or password.");
       }
     } catch (error) {
-      // Re-throwing the error to allow the calling component to handle it
       throw new Error(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
