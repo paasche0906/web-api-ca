@@ -46,17 +46,12 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+
+
   const register = async (username, password) => {
-    try {
-      const result = await signup(username, password);
-      if (result.code === 201) {
-        return true;
-      } else {
-        throw new Error(result.message || "Registration failed.");
-      }
-    } catch (error) {
-      throw new Error(error.response?.data?.message || "Registration failed. Please try again.");
-    }
+    const result = await signup(username, password);
+    console.log(result.code);
+    return result.code === 201;
   };
 
   const signout = () => {
@@ -77,7 +72,7 @@ const AuthContextProvider = ({ children }) => {
         register,
         signout,
         userName,
-        currentUser,
+        currentUser
       }}
     >
       {children}
