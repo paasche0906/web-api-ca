@@ -144,3 +144,4 @@ export const getSimilarMovies = async (movieId) => {
         throw error;
     }
 };
+

@@ -12,7 +12,7 @@ import {
     getMovieImages,
     getCredits,
     getMovieRecommendations,
-    getSimilarMovies
+    getSimilarMovies,
 } from '../tmdb-api';
 
 const router = express.Router();
@@ -211,7 +211,7 @@ router.get('/:movieId/credits', asyncHandler(async (req, res) => {
     }
 }));
 
-// Get movie recommendations
+// Get movie recommendations from TMDB
 router.get('/:movieId/recommendations', asyncHandler(async (req, res) => {
     const { movieId } = req.params;
 
@@ -224,7 +224,7 @@ router.get('/:movieId/recommendations', asyncHandler(async (req, res) => {
     }
 }));
 
-// Get similar movies
+// Get similar movies from TMDB
 router.get('/:movieId/similar', asyncHandler(async (req, res) => {
     const { movieId } = req.params;
 
@@ -236,6 +236,7 @@ router.get('/:movieId/similar', asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch similar movies', error: error.message });
     }
 }));
+
 
 
 export default router;

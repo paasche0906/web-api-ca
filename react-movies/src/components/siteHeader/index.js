@@ -17,9 +17,9 @@ import { auth } from '../../firebase';
 import { AuthContext } from '../../contexts/authContext';
 
 
-const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
+const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
-const SiteHeader = ({ history }) => {
+const SiteHeader = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -27,7 +27,7 @@ const SiteHeader = ({ history }) => {
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const navigate = useNavigate();
-    const { currentUser } = useContext(AuthContext); 
+    const { isAuthenticated, userName, signout, currentUser } = useContext(AuthContext);
 
     const menuOptions = [
         { label: "Home", path: "/" },
@@ -36,7 +36,7 @@ const SiteHeader = ({ history }) => {
         { label: "Upcoming", path: "/movies/upcoming" },
         { label: "Trending", path: "/movies/trending/today" },
         { label: "What's Popular", path: "/movies/popular" },
-        { label: "Top Rated", path: "/movies/top_rated" }
+        { label: "Top Rated", path: "/movies/top_rated" },
     ];
 
     const handleMenuSelect = (pageURL) => {
@@ -50,6 +50,7 @@ const SiteHeader = ({ history }) => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            signout();
             console.log("User signed out");
         } catch (error) {
             console.error("Error signing out:", error);
@@ -113,17 +114,17 @@ const SiteHeader = ({ history }) => {
                                     {opt.label}
                                 </Button>
                             ))}
-                            {currentUser ? (
+                            {isAuthenticated ? (
                                 <>
                                     <Typography variant="h6" sx={{ marginRight: 2 }}>
-                                        Hello, {currentUser.displayName}
+                                        Welcome, {userName || currentUser?.displayName || "User"}
                                     </Typography>
                                     <Button color="inherit" onClick={handleLogout}>
                                         Sign Out
                                     </Button>
                                 </>
                             ) : (
-                                <SignInButton />
+                                <Button color="inherit" onClick={() => navigate("/login")}>Login</Button>
                             )}
                         </>
                     )}

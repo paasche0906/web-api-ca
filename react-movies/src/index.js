@@ -21,6 +21,8 @@ import MovieCreditsPage from "./pages/MovieCreditsPage";
 import PersonDetailsPage from "./pages/PersonDetailsPage";
 import WatchlistMoviesPage from "./pages/watchlistMoviesPage";
 import AuthContextProvider from "./contexts/authContext";
+import LoginPage from "./pages/loginPage";
+import ProtectedRoutes from "./protectedRoutes";
 
 
 const queryClient = new QueryClient({
@@ -41,6 +43,8 @@ const App = () => {
           <SiteHeader />
           <MoviesContextProvider>
             <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<ProtectedRoutes />}>
               <Route path="/reviews/:id" element={<MovieReviewPage />} />
               <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
               <Route path="/movies/watchlists" element={<WatchlistMoviesPage />} />
@@ -57,7 +61,9 @@ const App = () => {
               <Route path="/movie/:id/videos" element={< MovieVideoPage />} />
               <Route path="/movie/:id/credits" element={< MovieCreditsPage />} />
               <Route path="/person/:personId" element={<PersonDetailsPage />} />
-            </Routes>
+              </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
           </MoviesContextProvider>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
