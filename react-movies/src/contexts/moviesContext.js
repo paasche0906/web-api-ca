@@ -1,55 +1,84 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
-    const [favorites, setFavorites] = useState([]);
-    const [myReviews, setMyReviews] = useState({});
-    const [mustWatchList, setMustWatchList] = useState([]);
+  const { isAuthenticated } = useContext(AuthContext); // Check user login status
+  const [favorites, setFavorites] = useState([]);
+  const [myReviews, setMyReviews] = useState({});
+  const [mustWatchList, setMustWatchList] = useState([]);
 
-    const addToFavorites = (movie) => {
-        let newFavorites = [];
-        if (!favorites.includes(movie.id)) {
-            newFavorites = [...favorites, movie.id];
-        } else {
-            newFavorites = [...favorites];
-        }
-        setFavorites(newFavorites);
-    };
+  // Add to favourites
+  const addToFavorites = (movie) => {
+    if (!isAuthenticated) {
+      alert("You need to be logged in to perform this action.");
+      return;
+    }
 
-    const removeFromFavorites = (movie) => {
-        setFavorites(favorites.filter((mId) => mId !== movie.id));
-    };
+    if (!favorites.includes(movie.id)) {
+      setFavorites((prevFavorites) => [...prevFavorites, movie.id]);
+    }
+  };
 
-    const addToMustWatchList = (movieId) => {
-        if (!mustWatchList.includes(movieId)) {
-            setMustWatchList((prevList) => [...prevList, movieId]);
-        }
-    };
+  // Remove from favourites
+  const removeFromFavorites = (movie) => {
+    if (!isAuthenticated) {
+      alert("You need to be logged in to perform this action.");
+      return;
+    }
 
-    const removeFromMustWatchList = (movieId) => {
-        setMustWatchList((prevList) => prevList.filter((id) => id !== movieId));
-    };
+    setFavorites((prevFavorites) => prevFavorites.filter((mId) => mId !== movie.id));
+  };
 
-    const addReview = (movie, review) => {
-        setMyReviews({ ...myReviews, [movie.id]: review });
-    };
+  // Add to Watchlist
+  const addToMustWatchList = (movieId) => {
+    if (!isAuthenticated) {
+      alert("You need to be logged in to perform this action.");
+      return;
+    }
 
-    return (
-        <MoviesContext.Provider
-            value={{
-                favorites,
-                addToFavorites,
-                removeFromFavorites,
-                addReview,
-                mustWatchList,
-                addToMustWatchList,
-                removeFromMustWatchList,
-            }}
-        >
-            {props.children}
-        </MoviesContext.Provider>
-    );
+    if (!mustWatchList.includes(movieId)) {
+      setMustWatchList((prevList) => [...prevList, movieId]);
+    }
+  };
+
+  // Remove from Watchlist
+  const removeFromMustWatchList = (movieId) => {
+    if (!isAuthenticated) {
+      alert("You need to be logged in to perform this action.");
+      return;
+    }
+
+    setMustWatchList((prevList) => prevList.filter((id) => id !== movieId));
+  };
+
+  // Add a movie review
+  const addReview = (movie, review) => {
+    if (!isAuthenticated) {
+      alert("You need to be logged in to perform this action.");
+      return;
+    }
+
+    setMyReviews((prevReviews) => ({ ...prevReviews, [movie.id]: review }));
+  };
+
+  return (
+    <MoviesContext.Provider
+      value={{
+        favorites,
+        addToFavorites,
+        removeFromFavorites,
+        myReviews,
+        addReview,
+        mustWatchList,
+        addToMustWatchList,
+        removeFromMustWatchList,
+      }}
+    >
+      {props.children}
+    </MoviesContext.Provider>
+  );
 };
 
 export default MoviesContextProvider;

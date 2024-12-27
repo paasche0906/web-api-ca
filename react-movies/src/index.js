@@ -44,16 +44,9 @@ const App = () => {
           <SiteHeader />
           <MoviesContextProvider>
             <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={ <SignUpPage /> } />
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/reviews/:id" element={<MovieReviewPage />} />
-              <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
-              <Route path="/movies/watchlists" element={<WatchlistMoviesPage />} />
               <Route path="/movies/:id" element={<MoviePage />} />
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />
-              <Route path="/reviews/form" element={<AddMovieReviewPage />} />
               <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
               <Route path="/movies/trending/today" element={<TrendingTodayPage />} />
               <Route path="/movie/:id/recommendations" element={<RecommendationsPage />} />
@@ -63,9 +56,16 @@ const App = () => {
               <Route path="/movie/:id/videos" element={< MovieVideoPage />} />
               <Route path="/movie/:id/credits" element={< MovieCreditsPage />} />
               <Route path="/person/:personId" element={<PersonDetailsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/reviews/:id" element={<MovieReviewPage />} />
+                <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
+                <Route path="/movies/watchlists" element={<WatchlistMoviesPage />} />
+                <Route path="/reviews/form" element={<AddMovieReviewPage />} />
               </Route>
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
           </MoviesContextProvider>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
