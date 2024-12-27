@@ -87,3 +87,10 @@
     margin-top: 1rem;
     color: #666;
 }
+
+.login-error {
+    color: #ff4d4f;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }

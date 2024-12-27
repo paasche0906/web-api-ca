@@ -32,18 +32,32 @@ const AuthContextProvider = ({ children }) => {
   };
 
   const authenticate = async (username, password) => {
-    const result = await login(username, password);
-    if (result.token) {
-      setToken(result.token);
-      setIsAuthenticated(true);
-      setUserName(username);
+    try {
+      const result = await login(username, password);
+      if (result.token) {
+        setToken(result.token);
+        setIsAuthenticated(true);
+        setUserName(username);
+      } else {
+        throw new Error(result.message || "Invalid username or password.");
+      }
+    } catch (error) {
+      // Re-throwing the error to allow the calling component to handle it
+      throw new Error(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
   const register = async (username, password) => {
-    const result = await signup(username, password);
-    console.log(result.code);
-    return result.code === 201;
+    try {
+      const result = await signup(username, password);
+      if (result.code === 201) {
+        return true;
+      } else {
+        throw new Error(result.message || "Registration failed.");
+      }
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Registration failed. Please try again.");
+    }
   };
 
   const signout = () => {
@@ -64,7 +78,7 @@ const AuthContextProvider = ({ children }) => {
         register,
         signout,
         userName,
-        currentUser
+        currentUser,
       }}
     >
       {children}
