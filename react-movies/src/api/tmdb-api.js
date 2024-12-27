@@ -95,7 +95,7 @@ export const getTrendingMoviesToday = async (page = 1) => {
 };
 
 export const getPopularMovies = async (page = 1) => {
-    return fetch(`${BASE_URL}/movies/tmdb/popular?page=${page}`) 
+    return fetch(`${BASE_URL}/movies/tmdb/popular?page=${page}`)
         .then((res) => {
             if (!res.ok) {
                 throw new Error('Failed to fetch popular movies');
@@ -108,7 +108,7 @@ export const getPopularMovies = async (page = 1) => {
 };
 
 export const getTopRatedMovies = async (page = 1) => {
-    return fetch(`${BASE_URL}/movies/tmdb/top_rated?page=${page}`) 
+    return fetch(`${BASE_URL}/movies/tmdb/top_rated?page=${page}`)
         .then((res) => {
             if (!res.ok) {
                 throw new Error('Failed to fetch top-rated movies');
@@ -121,7 +121,7 @@ export const getTopRatedMovies = async (page = 1) => {
 };
 
 export const getCredits = (movieId) => {
-    return fetch(`${BASE_URL}/movies/${movieId}/credits`) 
+    return fetch(`${BASE_URL}/movies/${movieId}/credits`)
         .then((response) => {
             if (!response.ok) {
                 return response.json().then((error) => {
@@ -254,3 +254,95 @@ export const signup = async (username, password) => {
     });
     return response.json();
 };
+
+export const getFavorites = async (token) => {
+    const response = await fetch("/api/favorites", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Failed to fetch favorites");
+    }
+    return response.json();
+};
+
+export const postFavorite = async (token, favorite) => {
+    const response = await fetch(`http://localhost:8080/api/favorites`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(favorite),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Backend Error:', errorData.message);
+        throw new Error(errorData.message || "Failed to add favorite");
+    }
+
+    return response.json();
+};
+export const deleteFavorite = async (token, movieId) => {
+    const response = await fetch(`/api/favorites/${movieId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    if (!response.ok) {
+        throw new Error("Failed to delete favorite");
+    }
+    return response.json();
+};
+
+export const getFavouriteMovies = async(id) => {
+    const response = await fetch(
+      `http://localhost:8080/api/favourite/${id}`, {
+      headers: {
+        'Authorization': window.localStorage.getItem('token')
+      }
+    }
+    )
+    return response.json();
+  };
+
+  // Add a favourite to a user
+export const addFavouriteMovie = async (userId, movieId) => {
+    const response = await fetch(`http://localhost:8080/api/favourite/`, {
+      method: "POST",
+      headers: {
+        Authorization: window.localStorage.getItem("token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, movieId }),
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+    return response.json();
+  };
+  
+  // Delete a user's favourites for a particular movie
+  export const deleteFavouriteMovie = async (userId, movieId) => {
+    const response = await fetch(
+      `http://localhost:8080/api/favourite/${userId}/${movieId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: window.localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message);
+    }
+    return response.json();
+  };

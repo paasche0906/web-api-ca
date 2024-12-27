@@ -1,30 +1,15 @@
-import React, { useState, useEffect, createContext } from "react";
-import { auth } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import React, { useState, createContext } from "react";
 import { login, signup } from "../api/tmdb-api";
 
 export const AuthContext = createContext(null);
 
 const AuthContextProvider = ({ children }) => {
   const existingToken = localStorage.getItem("token");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const existingUserId = localStorage.getItem("userId");
+  const [isAuthenticated, setIsAuthenticated] = useState(!!existingToken);
   const [authToken, setAuthToken] = useState(existingToken);
   const [userName, setUserName] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        setIsAuthenticated(true);
-      } else {
-        setCurrentUser(null);
-        setIsAuthenticated(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const [userId, setUserId] = useState(existingUserId);
 
   const setToken = (data) => {
     localStorage.setItem("token", data);
@@ -34,19 +19,19 @@ const AuthContextProvider = ({ children }) => {
   const authenticate = async (username, password) => {
     try {
       const result = await login(username, password);
-      if (result.token) {
+
+      if (result.success && result.token) {
         setToken(result.token);
         setIsAuthenticated(true);
         setUserName(username);
       } else {
-        throw new Error(result.message || "Invalid username or password.");
+        throw new Error(result.message || 'Login failed.');
       }
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Login failed. Please try again.");
+      console.error('Login failed:', error.message);
+      throw new Error('Login failed. Please try again.');
     }
   };
-
-
 
   const register = async (username, password) => {
     const result = await signup(username, password);
@@ -59,7 +44,9 @@ const AuthContextProvider = ({ children }) => {
       setIsAuthenticated(false);
       setAuthToken(null);
       setUserName("");
+      setUserId(null);
       localStorage.removeItem("token");
+      localStorage.removeItem("userId");
     }, 100);
   };
 
@@ -72,7 +59,7 @@ const AuthContextProvider = ({ children }) => {
         register,
         signout,
         userName,
-        currentUser
+        userId,
       }}
     >
       {children}

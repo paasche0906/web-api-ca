@@ -20,14 +20,15 @@ router.get('/user/:userId', async (req, res) => {
 
 // Add a favorite (POST)
 router.post('/', async (req, res) => {
-    const { userId, movieId } = req.body;
+    console.log('Request Body:', req.body);
 
+    const { userId, movieId } = req.body;
     if (!userId || !movieId) {
+        console.error('Missing required fields: userId or movieId');
         return res.status(400).json({ message: 'User ID and Movie ID are required.' });
     }
 
     try {
-        // Check if the movie is already favorited
         const existingFavorite = await FavoriteModel.findOne({ userId, movieId });
         if (existingFavorite) {
             return res.status(400).json({ message: 'Movie is already favorited.' });
@@ -35,11 +36,14 @@ router.post('/', async (req, res) => {
 
         const favorite = new FavoriteModel({ userId, movieId });
         const savedFavorite = await favorite.save();
+        console.log('Saved Favorite:', savedFavorite);
         res.status(201).json(savedFavorite);
     } catch (error) {
+        console.error('Error occurred:', error.message);
         res.status(500).json({ message: 'Error adding favorite', error: error.message });
     }
 });
+
 
 // Remove a favorite (DELETE)
 router.delete('/:userId/:movieId', async (req, res) => {

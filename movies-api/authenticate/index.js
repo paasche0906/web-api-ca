@@ -13,7 +13,7 @@ const authenticate = async (req, res, next) => {
         const user = await User.findOne({ username: decoded.username });
         if (!user) throw new Error('User not found');
 
-        req.user = { id: user._id, username: user.username }; // 附加 userId 到请求对象
+        req.user = { id: user._id, username: user.username };
         next();
     } catch (err) {
         next(new Error(`Verification Failed: ${err.message}`));

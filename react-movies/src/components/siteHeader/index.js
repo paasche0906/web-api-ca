@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import SignInButton from '../SignInButton';
 import { signOut } from "firebase/auth";
 import { auth } from '../../firebase';
 import { AuthContext } from '../../contexts/authContext';
