@@ -1,47 +1,54 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PageTemplate from "../components/templateMovieListPage";
 import { MoviesContext } from "../contexts/moviesContext";
-import { useQueries } from "react-query";
 import { getMovie } from "../api/tmdb-api";
-import Spinner from '../components/spinner'
+import Spinner from '../components/spinner';
 import RemoveFromFavorites from "../components/cardIcons/removeFromFavorites";
 import WriteReview from "../components/cardIcons/writeReview";
 
 const FavoriteMoviesPage = () => {
     const { favorites: movieIds } = useContext(MoviesContext);
+    const [movies, setMovies] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const favoriteMovieQueries = useQueries(
-        movieIds.map((movieId) => {
-            return {
-                queryKey: ["movie", { id: movieId }],
-                queryFn: getMovie,
-            };
-        })
-    );
-  
-    const isLoading = favoriteMovieQueries.find((m) => m.isLoading === true);
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const fetchedMovies = await Promise.all(
+                    movieIds.map((movieId) =>
+                        getMovie({ queryKey: ["movie", { id: movieId }] })
+                    )
+                );
+                setMovies(fetchedMovies);
+            } catch (error) {
+                console.error("Failed to load favorite movies:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
+        if (movieIds.length > 0) {
+            fetchMovies();
+        } else {
+            setIsLoading(false);
+        }
+    }, [movieIds]);
     if (isLoading) {
         return <Spinner />;
     }
 
-    const movies = favoriteMovieQueries.map((q) => {
-        q.data.genre_ids = q.data.genres.map(g => g.id)
-        return q.data
-    });
+    console.log("Movies to display:", movies);
 
     return (
         <PageTemplate
-            title="Favorite"
+            title="Favorite Movies"
             movies={movies}
-            action={(movie) => {
-                return (
-                    <>
-                        <RemoveFromFavorites movie={movie} />
-                        <WriteReview movie={movie} />
-                    </>
-                );
-            }}
+            action={(movie) => (
+                <>
+                    <RemoveFromFavorites movie={movie} />
+                    <WriteReview movie={movie} />
+                </>
+            )}
         />
     );
 };

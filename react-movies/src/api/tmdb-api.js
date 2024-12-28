@@ -257,7 +257,7 @@ export const signup = async (username, password) => {
 
 // Get a user's favourite movies
 export const getFavouriteMovies = async (userId) => {
-    const response = await fetch(`${BASE_URL}/favourite/user/${userId}`, {
+    const response = await fetch(`${BASE_URL}/favorites/user/${userId}`, {
         headers: {
             Authorization: window.localStorage.getItem('token'),
         },
@@ -268,6 +268,7 @@ export const getFavouriteMovies = async (userId) => {
     }
     return response.json();
 };
+
 
 // Add a favourite to a user
 export const addFavouriteMovie = async (userId, movieId) => {
