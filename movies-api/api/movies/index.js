@@ -106,7 +106,7 @@ router.get('/mongo/year/:year', asyncHandler(async (req, res) => {
     }
 }));
 
-// Gets movies whose original language is the specified value:
+// Gets movies whose original language is the specified value
 router.get('/mongo/language', asyncHandler(async (req, res) => {
     const { lang } = req.query;
 
@@ -132,7 +132,7 @@ router.get('/tmdb/all', asyncHandler(async (req, res) => {
     }
 }));
 
-// Get Images
+// Get Images from TMDB
 router.get('/:id/images', asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -147,9 +147,9 @@ router.get('/:id/images', asyncHandler(async (req, res) => {
 
 // Get upcoming movies from TMDB
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
-    const { page = 1 } = req.query; // 获取分页参数
+    const { page = 1 } = req.query;
     try {
-        const upcomingMovies = await getUpcomingMovies(page); // 调用 TMDB API
+        const upcomingMovies = await getUpcomingMovies(page);
         res.status(200).json(upcomingMovies);
     } catch (error) {
         console.error('Error fetching upcoming movies:', error.message);

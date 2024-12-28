@@ -1,42 +1,87 @@
 # Assignment 2 - Web API.
 
-Name: Your Name
+Name: Jiacheng Pan
+StudentID：20108802
+Youtube Link: 
 
 ## Features.
 
-A bullet-point list of the ADDITIONAL features you have implemented in the API **THAT WERE NOT IN THE LABS** (or modifications to existing features)
- 
- + Feature 1 
- + Feature 2 
- + Feature 3 
- + etc
+ + Favorites Feature
+  1. favorites/favoriteModel.js: Defines the schema for storing users’ favorite movies.
+  2. favorites/favoriteRoutes.js: Provides endpoints to add, remove, and get a user’s list of favorites.
+ + Reviews Feature
+  1. reviews/reviewModel.js: Defines the schema for storing reviews. The schema includes.
+  2. reviews/reviewRoutes.js: Provides endpoints to manage reviews.
+ + Movie Feature
+  1. Fetch Movies by Genre
+  2. Get movies with ratings higher than a specified value
+  3. Get movies based on the year provided
+  4. Gets movies whose original language is the specified value
+  5. Get all movies from TMDB
+  6. Get Images from TMDB
+  7. Get upcoming movies from TMDB
+  8. Get popular movies from TMDB
+  9. Get trending movies from TMDB
+  10. Get top-rated movies from TMDB
+  11. Get genres from TMDB
+  12. Get credits from TMDB
+  13. Get recommendations movies from TMDB
+  14. Get similar movies from TMDB
+ + tmdb-api.js: Contains helper functions to interact with The Movie Database (TMDB) API.
+
 
 ## Setup requirements.
 
-[ Outline any non-standard setup steps necessary to run your app locally after cloning the repo.]
+### Back-end: movies-api
+1. Clone the Repository
+- git clone [<repository-url>](https://github.com/paasche0906/web-api-ca.git)
+- cd movies-api
+2. Install Dependencies
+- npm install
+3. Environment Variables
+- Create a .env file in the root directory.
+- Add the following environment variables.
+4. Database Setup
+- node initialise-dev/initDevDB.js
+- Start Mongodatabase in Atlas
+5. Run the Application
+- npm run dev
+
+### Front-end: react-movies
+1. Start by cloning the repository from GitHub. Run the following command in your terminal:
+  git clone [<repository_url>](https://github.com/paasche0906/web-api-ca.git)
+2. Navigate to the cloned project directory:
+  cd Movies
+3. Install Dependencies: Run the following command to install all necessary dependencies:
+  npm install
+4. Create a .env file in the root directory of your project.
+Add the required environment variables as specified in the documentation. The file should contain variables like API keys for the movie database, Firebase configurations, and any other sensitive information needed. For example:
+- REACT_APP_TMDB_KEY=31af661a7adcb32ae044337494e0f685
+- FAST_REFRESH=false
+5. Ensure that Firebase is correctly configured.
+Update src/firebase.js with your specific Firebase project credentials. This will typically include keys like API key, authentication domain, project ID,etc.   
+6. Run the Application: To start the development server, run the following command:
+- npm start
+Open http://localhost:3000 in your browser to see the application in action.
+
 
 ## API Configuration
-
-Describe any configuration that needs to take place before running the API. For example, creating an `.env` file and what variables to put in it. Give an example of how this might be done.
-
-REMEMBER: DON'T PUT YOUR OWN USERNAMES/PASSWORDS/AUTH KEYS IN THE README OR ON GITHUB, just placeholders as indicated below:
-
 ______________________
-NODEENV=development
+
+NODE_ENV=development
 PORT=8080
-HOST=
-mongoDB=YourMongoURL
-seedDb=true
-secret=YourJWTSecret
+HOST=localhost
+MONGO_DB=mongodb+srv://jiahchengpan:panjiacheng0906@tasky.o4eno.mongodb.net/?retryWrites=true&w=majority&appName=tasky
+TMDB_KEY= The API key for accessing TMDb (The Movie Database), which provides information about movies, actors, and related data.
+SECRET=ilikecake
+secret= A secret key typically used for signing or encrypting tokens (for instance, JSON Web Tokens). This key helps secure authentication processes or other sensitive operations.
 ______________________
 
 ## API Design
-Give an overview of your web API design, perhaps similar to the following: 
-
-- /api/movies | GET | Gets a list of movies 
-- /api/movies/{movieid} | GET | Gets a single movie 
-- /api/movies/{movieid}/reviews | GET | Get all reviews for movie 
-- /api/movies/{movieid}/reviews | POST | Create a new review for Movie 
+1. Movies API
+|Endpoint|HTTP Verb|Description|
+|----|----|----|
+2. 
 
 If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
 
