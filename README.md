@@ -99,18 +99,151 @@ ______________________
 | `/api/movies/:movieId/recommendations`    | GET       | Retrieves movie recommendations based on the `movieId`.                                        |
 | `/api/movies/:movieId/similar`            | GET       | Retrieves a list of movies similar to a given `movieId`.                                       |
 
-2. 
+### Favorites API
 
-If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
+| Endpoint                           | HTTP Verb | Description                                                                  |
+|------------------------------------|-----------|------------------------------------------------------------------------------|
+| `/api/favorites/user/:userId`      | GET       | Retrieves all favorite movies for a specific user by their `userId`.        |
+| `/api/favorites`                   | POST      | Adds a favorite movie for a user. Requires `userId` and `movieId` in the request body. |
+| `/api/favorites/:userId/:movieId`  | DELETE    | Removes a specific favorite movie for a user by `userId` and `movieId`.     |
+
+### Reviews API
+
+| Endpoint                           | HTTP Verb | Description                                                                                   |
+|------------------------------------|-----------|-----------------------------------------------------------------------------------------------|
+| `/api/reviews/:movieId`            | GET       | Retrieves all reviews for a specific movie by `movieId`.                                      |
+| `/api/reviews/user/:author`        | GET       | Retrieves all reviews created by a specific user (`author`).                                  |
+| `/api/reviews`                     | GET       | Retrieves all reviews with pagination support. Query params: `page` and `limit`.             |
+| `/api/reviews/high-rating/:minRating` | GET    | Retrieves all reviews with a rating greater than or equal to `minRating`.                    |
+| `/api/reviews`                     | POST      | Adds a new review. Requires `movieId`, `author`, `content`, and `rating` in the request body. |
+| `/api/reviews/:reviewId`           | PUT       | Updates a review. Accepts `content` and/or `rating` in the request body.                     |
+| `/api/reviews/:reviewId`           | DELETE    | Deletes a specific review by its `reviewId`.                                                 |
+
+### User API
+
+| Endpoint        | HTTP Verb | Description                                                                                   |
+|------------------|-----------|-----------------------------------------------------------------------------------------------|
+| `/api/users`     | GET       | Retrieves a list of all users.                                                                |
+| `/api/users`     | POST      | Registers a new user or authenticates an existing user based on the `action` query parameter. |
+| `/api/users/:id` | PUT       | Updates user information for a specific user by their ID.                                     |
+
 
 ## Security and Authentication
 
-Give details of authentication/security implemented on the API (e.g. passport/sessions). Indicate which routes are protected.
+1. **Authentication Implementation**:
+   - **JWT (JSON Web Token)**: The API uses JWT for securing and authenticating user sessions. Tokens are issued upon successful login or registration and must be provided for accessing protected resources.
+   - **Token Storage**: Tokens are stored on the client-side in `localStorage` for persisting user authentication status across sessions.
+2. **Protected Routes**:
+   - Frontend routes requiring authentication are secured using the `ProtectedRoutes` component. This component checks the user's authentication state (via the `AuthContext`) and redirects unauthorized users to the login page.
+   - Backend routes are secured using middleware that verifies the provided JWT. This middleware extracts the token from the `Authorization` header, validates it, and ensures the user exists in the database.
+3. **API Endpoints**:
+   - **Login and Signup**: The `/users` endpoint supports `POST` requests for user login and registration, issuing tokens upon success.
+   - **Favorites**: Endpoints for managing user favorites require authentication, validated using the token sent in the `Authorization` header.
+4. **Key Routes**:
+   - Public routes:
+     - Login (`/login`)
+     - Signup (`/signup`)
+   - Protected routes (examples):
+     - Viewing and managing favorite movies (`/movies/favorites`).
+     - Viewing watchlists and adding reviews.
+5. **Authorization Middleware**:
+   - The backend employs middleware to verify tokens and associate authenticated requests with the corresponding user, enhancing security for all user-specific operations.
 
 ## Integrating with React App
 
-Describe how you integrated your React app with the API. List the views that use your Web API instead of the TMDB API. Describe any other updates to the React app from Assignment One.
+Here is the README section that describes the integration of the React application with your custom Web API:
+
+---
+
+## Integration of React Application with the Web API
+
+#### API Integration
+Key Features Added
+
+Custom Web API:
+Extended the Web API to handle requests for movie data, reviews, and favorites.
+Integrated the API with a MongoDB database for persistent data storage, such as user details, reviews, and favorites.
+
+React Frontend Updates:
+Replaced direct TMDB API calls with Web API endpoints for key functionalities.
+Introduced token-based authentication for secure interactions.
+
+1. **Movies API**:
+   - Fetch all movies: `/movies/tmdb/all` (e.g., in the movie listing views).
+   - Fetch movie details: `/movies/:id` for detailed movie information pages.
+   - Fetch movie images: `/movies/:id/images`.
+   - Fetch genres: `/tmdb/genres`.
+   - Fetch upcoming, popular, trending, and top-rated movies for dedicated views.
+
+2. **User API**:
+   - Login and signup endpoints for user authentication:
+     - Login: `/users` (POST).
+     - Signup: `/users?action=register`.
+   - User information is secured via token-based authentication and stored in `localStorage`.
+
+3. **Favorites API**:
+   - Manage user favorite movies:
+     - Get favorites: `/favorites/user/:userId`.
+     - Add to favorites: `/favorites/` (POST).
+     - Remove favorites: `/favorites/:userId/:movieId` (DELETE).
+
+4. **Reviews API**:
+   - Manage reviews:
+     - Fetch reviews for a movie: `/reviews/:movieId`.
+     - Add, update, and delete reviews are supported via `/reviews` endpoints for enhanced user engagement.
+
+#### Views Using Web API
+The following views in the React app were updated to use the Web API:
+
+- **Home Page**:
+  - Fetches trending or popular movies using `/movies/tmdb/trending/today` or `/movies/tmdb/popular`.
+
+- **Movie Details Page**:
+  - Fetches movie details (`/movies/:id`) and images (`/movies/:id/images`).
+
+- **Favorites Page**:
+  - Displays a user's favorite movies using `/favorites/user/:userId`.
+
+- **Reviews Section**:
+  - Shows reviews for movies using `/reviews/:movieId`.
+
+- **Authentication Pages**:
+  - Uses `/users` (login and signup).
+
+#### Other Updates
+- **API Client Updates**:
+  - A centralized `api/tmdb-api.js` file was updated with new functions to interact with the Web API endpoints instead of directly calling TMDB API.
+  - Token-based authentication headers were added where necessary.
+
 
 ## Independent learning (if relevant)
 
-Briefly explain any non-standard features developed for the app.   
+#### Login Page Implementation
+The **LoginPage** component handles user authentication by interacting with the `authenticate` function provided by the `AuthContext`. Here's a summary of its features:
+- **Form Validation**:
+  - Ensures both username and password are provided.
+  - Validates that the password length is at least 8 characters.
+- **Error Handling**:
+  - Displays error messages for invalid login credentials or missing inputs.
+- **Redirection**:
+  - Redirects authenticated users to the requested page or the homepage if no specific route was requested.
+- **Design**:
+  - Includes user-friendly form elements and error messages, styled with a custom `LoginPage.css` file.
+
+#### Signup Page Implementation
+The **SignUpPage** component enables new users to register by submitting their credentials to the Web API. Key features include:
+- **Validation Logic**:
+  - Checks that the username is at least 5 characters long and uses only valid characters (letters, numbers, underscores).
+  - Ensures passwords are at least 8 characters long and include uppercase, lowercase, numbers, and special characters.
+  - Verifies that the password and confirmation match.
+- **Error Feedback**:
+  - Displays descriptive error messages for invalid inputs or mismatched passwords.
+- **Successful Registration**:
+  - On successful signup, redirects the user to the login page.
+- **Styling**:
+  - A clean and responsive design implemented in `SignUpPage.css`.
+
+#### Context Integration
+Both components use the `AuthContext` to manage authentication state:
+- The **`AuthContext`** provides functions for login (`authenticate`) and registration (`register`), as well as state for tracking the current user's authentication status and token.
+- Authentication tokens are stored securely in `localStorage` and used for API calls requiring authorization.
