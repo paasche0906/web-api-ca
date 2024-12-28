@@ -272,34 +272,32 @@ export const getFavouriteMovies = async (userId) => {
 
 // Add a favourite to a user
 export const addFavouriteMovie = async (userId, movieId) => {
-    const response = await fetch(`${BASE_URL}/favourite/`, {
-        method: 'POST',
+    const response = await fetch(`${BASE_URL}/favorites/`, {
+        method: "POST",
         headers: {
-            Authorization: window.localStorage.getItem('token'),
-            'Content-Type': 'application/json',
+            Authorization: window.localStorage.getItem("token"),
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId, movieId }),
     });
-
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to add favorite');
+        throw new Error(error.message || "Failed to add to favorites");
     }
     return response.json();
 };
 
 // Delete a user's favourites for a particular movie
 export const deleteFavouriteMovie = async (userId, movieId) => {
-    const response = await fetch(`${BASE_URL}/favourite/${userId}/${movieId}`, {
-        method: 'DELETE',
+    const response = await fetch(`${BASE_URL}/favorites/${userId}/${movieId}`, {
+        method: "DELETE",
         headers: {
-            Authorization: window.localStorage.getItem('token'),
+            Authorization: window.localStorage.getItem("token"),
         },
     });
-
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to remove favorite');
+        throw new Error(error.message || "Failed to remove from favorites");
     }
     return response.json();
 };
