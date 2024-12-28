@@ -68,19 +68,37 @@ Open http://localhost:3000 in your browser to see the application in action.
 ## API Configuration
 ______________________
 
-NODE_ENV=development
-PORT=8080
-HOST=localhost
-MONGO_DB=mongodb+srv://jiahchengpan:panjiacheng0906@tasky.o4eno.mongodb.net/?retryWrites=true&w=majority&appName=tasky
-TMDB_KEY= The API key for accessing TMDb (The Movie Database), which provides information about movies, actors, and related data.
-SECRET=ilikecake
-secret= A secret key typically used for signing or encrypting tokens (for instance, JSON Web Tokens). This key helps secure authentication processes or other sensitive operations.
+- NODE_ENV=development
+- PORT=8080
+- HOST=localhost
+- MONGO_DB=mongodb+srv://jiahchengpan:panjiacheng0906@tasky.o4eno.mongodb.net/?retryWrites=true&w=majority&appName=tasky
+- TMDB_KEY= The API key for accessing TMDb (The Movie Database), which provides information about movies, actors, and related data.
+- SECRET=ilikecake
+- secret= A secret key typically used for signing or encrypting tokens (for instance, JSON Web Tokens). This key helps secure authentication processes or other sensitive operations.
 ______________________
 
 ## API Design
-1. Movies API
-|Endpoint|HTTP Verb|Description|
-|----|----|----|
+### Movies API
+
+| Endpoint                                  | HTTP Verb | Description                                                                                     |
+|-------------------------------------------|-----------|-------------------------------------------------------------------------------------------------|
+| `/api/movies`                             | GET       | Gets a paginated list of movies. Supports query params `page` and `limit` for pagination.      |
+| `/api/movies/:id`                         | GET       | Gets the details of a specific movie by its `id`.                                              |
+| `/api/movies/mongo/genre/:genreId`        | GET       | Retrieves movies that match a specific genre ID stored in MongoDB.                             |
+| `/api/movies/mongo/rating`                | GET       | Gets movies with a rating higher than a specified value. Accepts `minRating` as query param.   |
+| `/api/movies/mongo/year/:year`            | GET       | Retrieves movies released in a specified year.                                                 |
+| `/api/movies/mongo/language`              | GET       | Gets movies by their original language. Accepts `lang` as a query param.                       |
+| `/api/movies/tmdb/all`                    | GET       | Retrieves all movies from TMDB. Supports optional `page` query param for pagination.           |
+| `/api/movies/tmdb/upcoming`               | GET       | Retrieves upcoming movies from TMDB. Supports `page` query param.                              |
+| `/api/movies/tmdb/popular`                | GET       | Retrieves popular movies from TMDB. Supports `page` query param.                               |
+| `/api/movies/tmdb/trending/today`         | GET       | Retrieves trending movies for today from TMDB. Supports `page` query param.                    |
+| `/api/movies/tmdb/top_rated`              | GET       | Retrieves top-rated movies from TMDB. Supports `page` query param.                             |
+| `/api/movies/tmdb/genres`                 | GET       | Retrieves a list of genres from TMDB.                                                          |
+| `/api/movies/:id/images`                  | GET       | Retrieves images related to a specific movie by its `id`.                                      |
+| `/api/movies/:movieId/credits`            | GET       | Retrieves the cast and crew details of a specific movie by `movieId`.                          |
+| `/api/movies/:movieId/recommendations`    | GET       | Retrieves movie recommendations based on the `movieId`.                                        |
+| `/api/movies/:movieId/similar`            | GET       | Retrieves a list of movies similar to a given `movieId`.                                       |
+
 2. 
 
 If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
