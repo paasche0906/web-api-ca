@@ -255,47 +255,50 @@ export const signup = async (username, password) => {
     return response.json();
 };
 
-export const getUser = async (userId) => {
-    const response = await fetch(`http://localhost:8080/api/users/${userId}`);
+// Get a user's favourite movies
+export const getFavouriteMovies = async (userId) => {
+    const response = await fetch(`${BASE_URL}/favourite/user/${userId}`, {
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch favorites');
+    }
     return response.json();
 };
 
-export const getUserFavorites = async (userId) => {
-    try {
-        const response = await fetch(`http://localhost:8080/api/favorites/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+// Add a favourite to a user
+export const addFavouriteMovie = async (userId, movieId) => {
+    const response = await fetch(`${BASE_URL}/favourite/`, {
+        method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, movieId }),
+    });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch favorites for user ${userId}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching user favorites:', error.message);
-        throw error;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to add favorite');
     }
+    return response.json();
 };
 
-export const deleteUserFavorite = async (userId, movieId) => {
-    try {
-        const response = await fetch(`http://localhost:8080/api/favorites/${userId}/${movieId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+// Delete a user's favourites for a particular movie
+export const deleteFavouriteMovie = async (userId, movieId) => {
+    const response = await fetch(`${BASE_URL}/favourite/${userId}/${movieId}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        },
+    });
 
-        if (!response.ok) {
-            throw new Error(`Failed to delete favorite movie ${movieId} for user ${userId}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error deleting user favorite:', error.message);
-        throw error;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to remove favorite');
     }
+    return response.json();
 };

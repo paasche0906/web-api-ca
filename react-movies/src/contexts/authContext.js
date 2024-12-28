@@ -5,11 +5,9 @@ export const AuthContext = createContext(null);
 
 const AuthContextProvider = ({ children }) => {
   const existingToken = localStorage.getItem("token");
-  const existingUserId = localStorage.getItem("userId");
   const [isAuthenticated, setIsAuthenticated] = useState(!!existingToken);
   const [authToken, setAuthToken] = useState(existingToken);
   const [userName, setUserName] = useState("");
-  const [userId, setUserId] = useState(existingUserId);
 
   const setToken = (data) => {
     localStorage.setItem("token", data);
@@ -19,17 +17,15 @@ const AuthContextProvider = ({ children }) => {
   const authenticate = async (username, password) => {
     try {
       const result = await login(username, password);
-
-      if (result.success && result.token) {
+      if (result.token) {
         setToken(result.token);
         setIsAuthenticated(true);
         setUserName(username);
       } else {
-        throw new Error(result.message || 'Login failed.');
+        throw new Error(result.message || "Invalid username or password.");
       }
     } catch (error) {
-      console.error('Login failed:', error.message);
-      throw new Error('Login failed. Please try again.');
+      throw new Error(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -44,9 +40,7 @@ const AuthContextProvider = ({ children }) => {
       setIsAuthenticated(false);
       setAuthToken(null);
       setUserName("");
-      setUserId(null);
       localStorage.removeItem("token");
-      localStorage.removeItem("userId");
     }, 100);
   };
 
@@ -58,8 +52,7 @@ const AuthContextProvider = ({ children }) => {
         authenticate,
         register,
         signout,
-        userName,
-        userId,
+        userName
       }}
     >
       {children}
